@@ -13,11 +13,11 @@ def generate_unique_id() -> str:
 
 def generate_fake(gender_type, source_image) :
     temp_id = generate_unique_id() + ".jpg"
-    cv2.imwrite("/home/tobe1315/my_projects/face_swapper/Deepfake/temp_source/" + temp_id, source_image)
+    cv2.imwrite("/home/tobe1315/my_projects/Face_swapper/temp_source/" + temp_id, source_image)
     run_args = argparse.Namespace(
-        source_path="/home/tobe1315/my_projects/face_swapper/Deepfake/temp_source/{}".format(temp_id),
-        target_path="/home/tobe1315/my_projects/face_swapper/Deepfake/Background/Background/test.jpg",
-        output_path="/home/tobe1315/my_projects/face_swapper/Deepfake/test_no.jpg",
+        source_path="/home/tobe1315/my_projects/Face_swapper/temp_source/{}".format(temp_id),
+        target_path="/home/tobe1315/my_projects/Face_swapper/Background/Background/test.jpg",
+        output_path="/home/tobe1315/my_projects/Face_swapper/test_no.jpg",
         frame_processor=["face_swapper", "face_enhancer"],  # 필요한 경우 추가 파라미터를 설정할 수 있습니다
         keep_fps=False,
         keep_frames=False,
@@ -38,16 +38,16 @@ def generate_fake(gender_type, source_image) :
     if gender_type == "M" :
         male_list = []
         for i in range(1, 7):
-            run_args.target_path = "/home/tobe1315/my_projects/face_swapper/Deepfake/Background/Background/MALE_{}.jpg".format(i)
-            run_args.output_path = "/home/tobe1315/my_projects/face_swapper/Deepfake/output/{}".format(temp_id.split(".")[0] + "_MALE_{}.jpg".format(i))
+            run_args.target_path = "/home/tobe1315/my_projects/Face_swapper/Background/Background/MALE_{}.jpg".format(i)
+            run_args.output_path = "/home/tobe1315/my_projects/Face_swapper/output/{}".format(temp_id.split(".")[0] + "_MALE_{}.jpg".format(i))
             core.run(run_args)
             male_list.append(cv2.imread(run_args.output_path))
         return male_list
     elif gender_type == "F" :
         female_list = []
         for i in range(1, 7):
-            run_args.target_path = "/home/tobe1315/my_projects/face_swapper/Deepfake/Background/Background/test_{}.jpg".format(i)
-            run_args.output_path = "/home/tobe1315/my_projects/face_swapper/Deepfake/output/{}".format(temp_id.split(".")[0] + "_FEMALE_{}.jpg".format(i))
+            run_args.target_path = "/home/tobe1315/my_projects/Face_swapper/Background/Background/test_{}.jpg".format(i)
+            run_args.output_path = "/home/tobe1315/my_projects/Face_swapper/output/{}".format(temp_id.split(".")[0] + "_FEMALE_{}.jpg".format(i))
             core.run(run_args)
             female_list.append(cv2.imread(run_args.output_path))
         return female_list
@@ -55,14 +55,14 @@ def generate_fake(gender_type, source_image) :
         male_list = []
         female_list = []
         for i in range(1, 7):
-            run_args.target_path = "/home/tobe1315/my_projects/face_swapper/Deepfake/Background/Background/MALE_{}.jpg".format(i)
-            run_args.output_path = "/home/tobe1315/my_projects/face_swapper/Deepfake/output/{}".format(temp_id.split(".")[0] + "_MALE_{}.jpg".format(i))
+            run_args.target_path = "/home/tobe1315/my_projects/Face_swapper/Background/Background/MALE_{}.jpg".format(i)
+            run_args.output_path = "/home/tobe1315/my_projects/Face_swapper/output/{}".format(temp_id.split(".")[0] + "_MALE_{}.jpg".format(i))
             core.run(run_args)
             male_list.append(cv2.imread(run_args.output_path))
 
         for i in range(1, 7):
-            run_args.target_path = "/home/tobe1315/my_projects/face_swapper/Deepfake/Background/Background/test_{}.jpg".format(i)
-            run_args.output_path = "/home/tobe1315/my_projects/face_swapper/Deepfake/output/{}".format(temp_id.split(".")[0] + "_FEMALE_{}.jpg".format(i))
+            run_args.target_path = "/home/tobe1315/my_projects/Face_swapper/Background/Background/test_{}.jpg".format(i)
+            run_args.output_path = "/home/tobe1315/my_projects/Face_swapper/output/{}".format(temp_id.split(".")[0] + "_FEMALE_{}.jpg".format(i))
             core.run(run_args)
             female_list.append(cv2.imread(run_args.output_path))
         return male_list, female_list

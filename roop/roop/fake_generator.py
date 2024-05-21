@@ -1,7 +1,7 @@
 from roop import core
 import argparse
 import cv2
-
+import dlib
 import os
 import time
 
@@ -10,8 +10,10 @@ def generate_unique_id() -> str:
     return str(current_time)
 
 
-def generate_fake(gender_type, source_image) :
-    temp_id = generate_unique_id() + ".jpg"
+def generate_fake(ID, gender_type, source_image) :
+    if ID is not str :
+        ID = str(ID)
+    temp_id = ID + ".jpg"
     cv2.imwrite("/home/tobe1315/my_projects/Face_swapper/temp_source/" + temp_id, source_image)
     run_args = argparse.Namespace(
         source_path="/home/tobe1315/my_projects/Face_swapper/temp_source/{}".format(temp_id),
@@ -31,12 +33,15 @@ def generate_fake(gender_type, source_image) :
         output_video_quality=35,
         max_memory=None,
         execution_provider=["cuda"],
-        execution_threads= 8 
+        execution_threads= 8,
+        temp_id = ""
     )
     run_args.headless = True  # headless 모드로 실행하도록 설정합니다
     folder_path = r"/home/tobe1315/my_projects/Face_swapper/output/{}".format(temp_id.split(".")[0])
     os.mkdir(folder_path)
-    
+    core.bounding_boxes("/home/tobe1315/my_projects/Face_swapper/temp_source/" + temp_id, "/home/tobe1315/my_projects/Face_swapper/face_detection/" + temp_id)
+    core.draw_landmarks("/home/tobe1315/my_projects/Face_swapper/temp_source/" + temp_id, "/home/tobe1315/my_projects/Face_swapper/face_landmarks/" + temp_id)
+    run_args.temp_id = temp_id.split(".")[0]
     if gender_type == "M" :
         male_list = []
         for i in range(1, 7):
@@ -67,5 +72,8 @@ def generate_fake(gender_type, source_image) :
             core.run(run_args)
             female_list.append(cv2.imread(run_args.output_path))
         return output_list
+    
+
+
 
     

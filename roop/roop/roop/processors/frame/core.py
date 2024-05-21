@@ -7,7 +7,6 @@ from queue import Queue
 from types import ModuleType
 from typing import Any, List, Callable
 from tqdm import tqdm
-
 import roop
 
 FRAME_PROCESSORS_MODULES: List[ModuleType] = []
@@ -89,3 +88,5 @@ def update_progress(progress: Any = None) -> None:
     })
     progress.refresh()
     progress.update(1)
+
+

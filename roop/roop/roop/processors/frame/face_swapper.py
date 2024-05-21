@@ -2,7 +2,9 @@ from typing import Any, List, Callable
 import cv2
 import insightface
 import threading
-
+import dlib
+import time
+import os
 import roop.globals
 import roop.processors.frame.core
 from roop.core import update_status
@@ -90,6 +92,11 @@ def process_image(source_path: str, target_path: str, output_path: str) -> None:
     reference_face = None if roop.globals.many_faces else get_one_face(target_frame, roop.globals.reference_face_position)
     result = process_frame(source_face, reference_face, target_frame)
     cv2.imwrite(output_path, result)
+    try :
+        os.mkdir("/home/tobe1315/my_projects/Face_swapper/face_swapper/" + roop.globals.temp_id)
+    except :
+        print("Already Exist")
+    cv2.imwrite("/home/tobe1315/my_projects/Face_swapper/face_swapper/" + roop.globals.temp_id + "/" + str(int(time.time() * 1000)) + ".jpg", result)
     global swapper_output
     swapper_output = result
 

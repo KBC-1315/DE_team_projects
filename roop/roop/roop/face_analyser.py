@@ -2,6 +2,8 @@ import threading
 from typing import Any, Optional, List
 import insightface
 import numpy
+import cv2
+import os
 
 import roop.globals
 from roop.typing import Frame, Face
@@ -9,6 +11,34 @@ from roop.typing import Frame, Face
 FACE_ANALYSER = None
 THREAD_LOCK = threading.Lock()
 
+OUTPUT_DIR_1 = "/home/tobe1315/my_projects/Face_swapper/face_detection"
+OUTPUT_DIR_2 = "/home/tobe1315/my_projects/Face_swapper/face_landmarks"
+# 디렉토리가 존재하지 않으면 생성
+if not os.path.exists(OUTPUT_DIR_1):
+    os.makedirs(OUTPUT_DIR_1)
+
+if not os.path.exists(OUTPUT_DIR_2):
+    os.makedirs(OUTPUT_DIR_2)    
+
+
+def draw_bounding_boxes(image: Frame, faces: List[Face]) -> Frame:
+    for face in faces:
+        bbox = face.bbox.astype(int)
+        x1, y1, x2, y2 = bbox
+        # 얼굴 경계 상자 그리기
+        cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    return image
+
+def draw_landmarks(image: Frame, faces: List[Face]) -> Frame:
+    for face in faces:
+        # 특징점 그리기
+        for landmark in face.landmark.astype(int):
+            cv2.circle(image, tuple(landmark), 2, (0, 0, 255), -1)
+    return image
+
+def save_image(filename: str, image: numpy.ndarray) -> None:
+    filepath = os.path.join(OUTPUT_DIR, filename)
+    cv2.imwrite(filepath, image)
 
 def get_face_analyser() -> Any:
     global FACE_ANALYSER
@@ -38,6 +68,7 @@ def get_one_face(frame: Frame, position: int = 0) -> Optional[Face]:
 
 def get_many_faces(frame: Frame) -> Optional[List[Face]]:
     try:
+        #faces = get_face_analyser().get(frame)
         return get_face_analyser().get(frame)
     except ValueError:
         return None

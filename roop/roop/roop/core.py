@@ -10,6 +10,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import warnings
 from typing import List
 import platform
+import cv2
+import dlib
 import signal
 import shutil
 import argparse
@@ -225,6 +227,7 @@ def run(args: argparse.Namespace) -> None:
     roop.globals.max_memory = args.max_memory
     roop.globals.execution_providers = decode_execution_providers(args.execution_provider)
     roop.globals.execution_threads = args.execution_threads
+    roop.globals.temp_id = args.temp_id
     if not pre_check():
         return
     for frame_processor in get_frame_processors_modules(roop.globals.frame_processors):
@@ -236,3 +239,45 @@ def run(args: argparse.Namespace) -> None:
     else:
         window = ui.init(start, destroy)
         window.mainloop()
+def bounding_boxes(image_path, output_path):
+    # 얼굴 검출기 초기화
+    detector = dlib.get_frontal_face_detector()
+
+    # 이미지 불러오기
+    image = cv2.imread(image_path)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # 얼굴 검출
+    faces = detector(gray)
+
+    # 얼굴 주위에 바운딩 박스 그리기
+    for face in faces:
+        x, y, w, h = face.left(), face.top(), face.width(), face.height()
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    # 이미지 저장
+    cv2.imwrite(output_path, image)
+
+
+def draw_landmarks(image_path, output_path):
+    # 얼굴 검출기 및 랜드마크 예측기 초기화
+    detector = dlib.get_frontal_face_detector()
+    predictor = dlib.shape_predictor("/home/tobe1315/my_projects/Face_swapper/roop/roop/models/shape_predictor_68_face_landmarks.dat")
+
+    # 이미지 불러오기
+    image = cv2.imread(image_path)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # 얼굴 검출
+    faces = detector(gray)
+
+    # 랜드마크 표시
+    for face in faces:
+        landmarks = predictor(gray, face)
+        for n in range(0, 68):  # 68개의 랜드마크 점
+            x = landmarks.part(n).x
+            y = landmarks.part(n).y
+            cv2.circle(image, (x, y), 2, (0, 0, 255), -1)
+
+    # 이미지 저장
+    cv2.imwrite(output_path, image)

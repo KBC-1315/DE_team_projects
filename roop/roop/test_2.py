@@ -12,6 +12,6 @@ from roop import core
 import argparse
 import pathlib
 import base64
-test_image = cv2.imread("/home/tobe1315/my_projects/Face_swapper/source/sample4.jpg")
-test = generate_fake("11111111111111", "F", test_image)
+test_image = cv2.imread("/home/tobe1315/my_projects/Face_swapper/temp_source/123.jpg")
+test = generate_fake("filer_test_3", "R", test_image)
 print(test)

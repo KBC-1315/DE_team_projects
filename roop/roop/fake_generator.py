@@ -58,6 +58,11 @@ def generate_fake(ID, gender_type, source_image) :
             core.run(run_args)
             female_list.append(cv2.imread(run_args.output_path))
         return female_list
+    elif gender_type == "R" :
+        run_args.target_path = run_args.source_path
+        run_args.output_path = "/home/tobe1315/my_projects/Face_swapper/output/{}/{}".format(temp_id.split(".")[0],temp_id.split(".")[0] + "_RESTORATION.jpg")
+        core.run(run_args)
+        return cv2.imread(run_args.output_path)
     else :
         output_list = []
         for i in range(1, 7):

@@ -11,7 +11,6 @@ from typing import List
 from roop import core
 import argparse
 import pathlib
-<<<<<<< HEAD
 import psutil
 import subprocess
 import json
@@ -117,17 +116,8 @@ async def get_system_info():
         return JSONResponse(content={"error": "An error occurred", "details": str(e)}, status_code=400)
 
 
-
-@app.post("/fakeface/")
-async def create_fake_images(ID: int, gender_type: str, file: UploadFile = File(...)):
-=======
-import base64
-
-app = FastAPI()
-
 @app.post("/fakeface/")
 async def create_fake_images(gender_type: str, file: UploadFile = File(...)):
->>>>>>> 841f54f39e63c843d9fc34e4380976e953c65d6a
     try:
         file_contents = await file.read()
         nparr = np.frombuffer(file_contents, np.uint8)
@@ -136,12 +126,8 @@ async def create_fake_images(gender_type: str, file: UploadFile = File(...)):
         if source_image is None:
             return JSONResponse(content={"error": "Could not decode image"}, status_code=400)
 
-<<<<<<< HEAD
         result_images = generate_fake(ID, gender_type, source_image)
-=======
         result_images = generate_fake(gender_type, source_image)
->>>>>>> 841f54f39e63c843d9fc34e4380976e953c65d6a
-
         # 이미지들을 base64로 인코딩하여 리스트로 반환
         encoded_images = []
         for image in result_images:
